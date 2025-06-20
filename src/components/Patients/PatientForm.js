@@ -1,72 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { createPatient, updatePatient } from '../../services/api';
+import React, { useState } from 'react';
 
-function PatientForm({ onPatientSaved, patientToEdit }) {
-  const [formData, setFormData] = useState({ name: '', age: '', gender: '' });
+function ProfileForm({ data, onSave, onCancel }) {
+  const [formData, setFormData] = useState(JSON.parse(JSON.stringify(data))); // deep copy
 
-  useEffect(() => {
-    if (patientToEdit) {
-      setFormData({
-        name: patientToEdit.name,
-        age: patientToEdit.age,
-        gender: patientToEdit.gender
-      });
-    } else {
-      setFormData({ name: '', age: '', gender: '' });
-    }
-  }, [patientToEdit]);
-
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const path = name.split('.');
+    const updated = { ...formData };
+
+    let target = updated;
+    for (let i = 0; i < path.length - 1; i++) {
+      target = target[path[i]];
+    }
+    target[path[path.length - 1]] = value;
+
+    setFormData(updated);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      if (patientToEdit) {
-        await updatePatient(patientToEdit.id, formData);
-      } else {
-        await createPatient({
-          name: formData.name,
-          age: parseInt(formData.age),
-          gender: formData.gender
-        });
-      }
-      onPatientSaved();
-      setFormData({ name: '', age: '', gender: '' });
-    } catch (err) {
-      console.error(err);
-    }
+    onSave(formData);
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h3>Adaugă pacient nou</h3>
-      <input
-        type="text"
-        name="name"
-        placeholder="Nume"
-        value={formData.name}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="number"
-        name="age"
-        placeholder="Vârstă"
-        value={formData.age}
-        onChange={handleChange}
-        required
-      />
-      <select name="gender" value={formData.gender} onChange={handleChange} required>
-        <option value="">Gen</option>
-        <option value="Male">Masculin</option>
-        <option value="Female">Feminin</option>
-      </select>
+      {data.role === "1" && data.doctor && (
+        <>
+          <input name="doctor.name" value={formData.doctor.name} onChange={handleChange} placeholder="Nume" />
+          <input name="doctor.age" value={formData.doctor.age} onChange={handleChange} placeholder="Vârstă" />
+          <input name="doctor.gender" value={formData.doctor.gender} onChange={handleChange} placeholder="Gen" />
+          <input name="doctor.specialization" value={formData.doctor.specialization} onChange={handleChange} placeholder="Specializare" />
+          <input name="doctor.seal" value={formData.doctor.seal} onChange={handleChange} placeholder="Parafă" />
+          <input name="doctor.contactNumber" value={formData.doctor.contactNumber} onChange={handleChange} placeholder="Telefon" />
+        </>
+      )}
+      {data.role === "2" && data.patient && (
+        <>
+          <input name="patient.name" value={formData.patient.name} onChange={handleChange} placeholder="Nume" />
+          <input name="patient.age" value={formData.patient.age} onChange={handleChange} placeholder="Vârstă" />
+          <input name="patient.gender" value={formData.patient.gender} onChange={handleChange} placeholder="Gen" />
+        </>
+      )}
       <button type="submit">Salvează</button>
+      <button type="button" onClick={onCancel}>Anulează</button>
     </form>
   );
 }
 
-export default PatientForm;
+export default ProfileForm;

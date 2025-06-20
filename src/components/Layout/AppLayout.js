@@ -11,21 +11,21 @@ function AppLayout() {
           <li><Link to="/dashboard">🏠 Dashboard</Link></li>
           <li><Link to="/chat">💬 Chat</Link></li>
 
-          {role === 'doctor' && <>
+          {role === 1 && <>
             <li><Link to="/patients">👥 Pacienți</Link></li>
-            <li><Link to="/calendar">📅 Calendar</Link></li>
             <li><Link to="/medical-records">📄 Fișe medicale</Link></li>
             <li><Link to="/prescriptions">💊 Rețete</Link></li>
           </>}
 
-          {role === 'patient' && <>
+          {role === 2 && <>
             <li><Link to="/medical-records">📄 Fișele mele</Link></li>
+            <li><Link to="/prescriptions">💊 Rețete</Link></li>
           </>}
 
           {role === 'nurse' && <>
             <li><Link to="/assigned">👩‍⚕️ Pacienți repartizați</Link></li>
           </>}
-
+          <li><Link to="/calendar">📅 Calendar</Link></li>
           <li><Link to="/profile">👤 Profil</Link></li>
           <li><button onClick={logout}>🚪 Logout</button></li>
         </ul>

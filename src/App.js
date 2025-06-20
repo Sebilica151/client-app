@@ -12,6 +12,7 @@ import PatientsPage from './pages/PatientsPage';
 import CalendarPage from './pages/CalendarPage';
 import MedicalRecordsPage from './pages/MedicalRecordsPage';
 import PrescriptionsPage from './pages/PrescriptionsPage';
+import RegisterPage from './pages/RegisterPage';
 
 
 function ProtectedRoutes() {
@@ -24,6 +25,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<LoginPage />} />
           <Route path="/" element={<ProtectedRoutes />}>
           <Route path="dashboard" element={<DashboardPage />} />
@@ -34,6 +36,7 @@ function App() {
             <Route path="medical-records" element={<MedicalRecordsPage />} />
             <Route path="prescriptions" element={<PrescriptionsPage />} />
           </Route>
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

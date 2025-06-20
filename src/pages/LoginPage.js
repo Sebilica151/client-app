@@ -14,6 +14,7 @@ function LoginPage() {
     try {
       const token = await loginApi(formData.username, formData.password);
       login(token);             // salvează în context + localStorage
+      console.log("Token salvat:", localStorage.getItem("token"));
       navigate('/dashboard');    // imediat după login, fără reload
     } catch (err) {
       setError('Login eșuat. Verifică datele!');
@@ -41,6 +42,13 @@ function LoginPage() {
         required
       />
       <button type="submit">Login</button>
+      <button 
+        type="button"
+        onClick={() => navigate('/register')}
+        style={{ marginLeft: '10px' }}
+      >
+       Creeaza cont
+      </button>
     </form>
   );
 }

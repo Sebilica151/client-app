@@ -1,4 +1,3 @@
-// src/pages/PatientsPage.js
 import React, { useState } from 'react';
 import PatientList from '../components/Patients/PatientList';
 import PatientForm from '../components/Patients/PatientForm';
@@ -7,7 +6,15 @@ function PatientsPage() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const handleRefresh = () => setRefreshKey(old => old + 1);
+  const handleRefresh = () => {
+    setRefreshKey(old => old + 1);
+    setSelectedPatient(null); // Resetează formularul după salvare
+  };
+
+  const handleEdit = (patient) => {
+    setSelectedPatient(patient);
+    window.scrollTo(0, 0); // opțional: derulează în sus la formular
+  };
 
   return (
     <div>
@@ -17,6 +24,7 @@ function PatientsPage() {
       />
       <PatientList
         onSelect={setSelectedPatient}
+        onEdit={handleEdit}
         onRefresh={refreshKey}
       />
       {selectedPatient && (
