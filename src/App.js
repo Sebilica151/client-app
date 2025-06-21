@@ -13,7 +13,7 @@ import CalendarPage from './pages/CalendarPage';
 import MedicalRecordsPage from './pages/MedicalRecordsPage';
 import PrescriptionsPage from './pages/PrescriptionsPage';
 import RegisterPage from './pages/RegisterPage';
-
+import TestTailwindPage from './pages/TestTailwindPage';
 
 function ProtectedRoutes() {
   const { isLoggedIn } = useAuth();
@@ -37,6 +37,7 @@ function App() {
             <Route path="prescriptions" element={<PrescriptionsPage />} />
           </Route>
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/tailwind-test" element={<TestTailwindPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

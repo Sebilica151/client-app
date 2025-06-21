@@ -300,10 +300,39 @@ export const updateProfile = async (data) => {
     throw new Error("Eroare la actualizarea profilului");
   }
 
-  // dacă răspunsul e gol (204), nu face parsare JSON
   if (res.status === 204) return;
 
-  // altfel, în caz că serverul chiar întoarce ceva
   return res.json();
 };
 
+export async function assignPatientToDoctor(patientId, doctorId) {
+  console.log("📤 Trimitem assignDoctor:", { doctorId });
+  const response = await fetch(`${API_BASE}/users/${patientId}/assign-doctor`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ doctorId })
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(`Eroare la asignare: ${message}`);
+  }
+}
+
+export async function unassignPatientFromDoctor(patientId) {
+  const response = await fetch(`${API_BASE}/users/${patientId}/unassign-doctor`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(`Eroare la dezasignare: ${message}`);
+  }
+}
+
+export const fetchUsers = async () => {
+  const res = await fetch(`${API_BASE}/users`);
+  if (!res.ok) throw new Error('Eroare la preluarea utilizatorilor');
+  return res.json();
+};

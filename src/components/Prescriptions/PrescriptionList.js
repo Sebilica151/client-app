@@ -1,8 +1,10 @@
+// src/components/Prescriptions/PrescriptionList.js
 import React from 'react';
 import { deletePrescription } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import '../../pages/PrescriptionsPage.css';
 
 function PrescriptionList({ prescriptions, onEdit, onDeleted }) {
   const { role } = useAuth();
@@ -16,7 +18,7 @@ function PrescriptionList({ prescriptions, onEdit, onDeleted }) {
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.text("Lista rețetelor", 14, 16);
-  
+
     autoTable(doc, {
       head: [['Medicament', 'Dozaj']],
       body: prescriptions.map(p => [
@@ -25,34 +27,40 @@ function PrescriptionList({ prescriptions, onEdit, onDeleted }) {
       ]),
       startY: 22
     });
-  
+
     doc.save("retete.pdf");
   };
-  
+
   if (!prescriptions || prescriptions.length === 0)
     return <p>Nu există rețete.</p>;
 
   return (
-    <div>
+    <div className="prescription-list">
       {Number(role) === 2 && (
-        <button onClick={exportToPDF} style={{ marginBottom: '1rem' }}>
+        <button className="export-btn" onClick={exportToPDF}>
           Exportă PDF
         </button>
       )}
 
-      <ul>
-        {prescriptions.map((p) => (
-          <li key={p.Id ?? p.id}>
-            <strong>{p.Medication}</strong> – {p.Dosage}
-            {Number(role) === 1 && (
-              <>
-                <button onClick={() => onEdit(p)} style={{ marginLeft: 10 }}>Editează</button>
-                <button onClick={() => handleDelete(p.Id ?? p.id)} style={{ marginLeft: 5 }}>Șterge</button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      {prescriptions.map((p) => (
+        <div key={p.Id ?? p.id} className="prescription-card">
+          <div className="prescription-details">
+            <p><strong>{p.Medication}</strong></p>
+            <p>{p.Dosage}</p>
+          </div>
+
+          {Number(role) === 1 && (
+            <div className="prescription-actions">
+              <button className="edit-btn" onClick={() => onEdit(p)}>
+                Editează
+              </button>
+              <button className="delete-btn" onClick={() => handleDelete(p.Id ?? p.id)}>
+                Șterge
+              </button>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

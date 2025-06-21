@@ -8,6 +8,7 @@ import {
   getCurrentPatientId
 } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import './DashboardPage.css';
 
 function DashboardPage() {
   const { role } = useAuth();
@@ -18,13 +19,10 @@ function DashboardPage() {
 
   const today = new Date().toISOString().split('T')[0];
 
-  // Doctor Dashboard
   useEffect(() => {
     if (Number(role) === 1) {
-      // Fetch number of patients
       fetchPatients().then(patients => setPatientCount(patients.length));
 
-      // Fetch today's appointments
       const doctorId = getCurrentDoctorId();
       if (doctorId) {
         fetchAppointmentsByDoctorAndDate(doctorId, today)
@@ -34,12 +32,10 @@ function DashboardPage() {
     }
   }, [role]);
 
-  // Patient Dashboard
   useEffect(() => {
     if (Number(role) === 2) {
       const patientId = getCurrentPatientId();
       if (patientId) {
-        // Get all appointments and pick next
         fetchAppointmentsForPatient(patientId)
           .then(apps => {
             const future = apps
@@ -50,7 +46,6 @@ function DashboardPage() {
           .catch(console.error);
       }
 
-      // Get associated doctor
       fetchProfile()
         .then(data => {
           setAssociatedDoctor(data.patient?.doctor || null);
@@ -60,46 +55,56 @@ function DashboardPage() {
   }, [role]);
 
   return (
-    <div>
-      <h2>Dashboard</h2>
+    <div className="dashboard-container">
+      <h2 className="dashboard-title">Dashboard</h2>
 
       {Number(role) === 1 && (
-        <>
-          <p><strong>Număr total pacienți:</strong> {patientCount}</p>
-          <p><strong>Programări azi:</strong> {todayAppointments.length}</p>
-          <ul>
-            {todayAppointments.map((appt, idx) => (
-              <li key={idx}>
-                {appt.TimeSlot} - {appt.Patient?.Name || 'Pacient necunoscut'}
-              </li>
-            ))}
-          </ul>
-        </>
+        <div className="dashboard-grid">
+          <div className="dashboard-card">
+            <h3>Pacienți</h3>
+            <p>{patientCount} în total</p>
+          </div>
+          <div className="dashboard-card">
+            <h3>Programări azi</h3>
+            <p>{todayAppointments.length}</p>
+            <ul>
+              {todayAppointments.map((appt, idx) => (
+                <li key={idx}>
+                  {appt.TimeSlot} – {appt.Patient?.Name || 'Pacient necunoscut'}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       )}
 
       {Number(role) === 2 && (
-        <>
-          <p><strong>Următoarea programare:</strong></p>
-          {nextAppointment ? (
-            <p>
-              {nextAppointment.Date} la {nextAppointment.TimeSlot}
-              {nextAppointment.doctor && (
-                <> cu Dr. {nextAppointment.Doctor.Name}</>
-              )}
-            </p>
-          ) : (
-            <p>Nu ai programări viitoare.</p>
-          )}
+        <div className="dashboard-grid">
+          <div className="dashboard-card">
+            <h3>Următoarea programare</h3>
+            {nextAppointment ? (
+              <p>
+                {nextAppointment.Date} la {nextAppointment.TimeSlot}
+                {nextAppointment.doctor && (
+                  <> cu Dr. {nextAppointment.Doctor.Name}</>
+                )}
+              </p>
+            ) : (
+              <p>Nu ai programări viitoare.</p>
+            )}
+          </div>
 
-          <p><strong>Medicul asociat:</strong></p>
-          {associatedDoctor ? (
-            <p>
-              {associatedDoctor.Name} – {associatedDoctor.Specialization}
-            </p>
-          ) : (
-            <p>Niciun medic asociat.</p>
-          )}
-        </>
+          <div className="dashboard-card">
+            <h3>Medicul asociat</h3>
+            {associatedDoctor ? (
+              <p>
+                {associatedDoctor.Name} – {associatedDoctor.Specialization}
+              </p>
+            ) : (
+              <p>Niciun medic asociat.</p>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

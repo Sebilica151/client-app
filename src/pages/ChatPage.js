@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { fetchGlobalMessages, sendGlobalMessage } from '../services/api';
-import { getCurrentUserId } from '../services/api';
+import { fetchGlobalMessages, sendGlobalMessage, getCurrentUserId } from '../services/api';
+import './ChatPage.css';
 
 function ChatPage() {
   const [messages, setMessages] = useState([]);
@@ -60,23 +60,15 @@ function ChatPage() {
   };
 
   return (
-    <div>
-      <h2>Chat Global</h2>
+    <div className="chat-container">
+      <h2 className="chat-title">Chat Global</h2>
 
-      <div
-        style={{
-          maxHeight: '400px',
-          overflowY: 'auto',
-          border: '1px solid #ccc',
-          padding: '1rem',
-          marginBottom: '1rem',
-        }}
-      >
+      <div className="chat-messages">
         {messages.map((msg, idx) => (
-          <div key={idx} style={{ marginBottom: '0.5rem' }}>
+          <div key={idx} className="chat-message">
             <strong>{msg.SenderName || msg.senderName || 'Anonim'}:</strong>{' '}
             {msg.content ?? msg.Content ?? '(mesaj indisponibil)'}
-            <div style={{ fontSize: '0.75rem', color: '#666' }}>
+            <div className="chat-timestamp">
               {formatDate(msg.SentAt || msg.sentAt)}
             </div>
           </div>
@@ -84,15 +76,15 @@ function ChatPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSend}>
+      <form onSubmit={handleSend} className="chat-form">
         <input
           type="text"
           placeholder="Scrie un mesaj..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          style={{ width: '80%' }}
+          className="chat-input"
         />
-        <button type="submit" style={{ width: '18%', marginLeft: '2%' }}>
+        <button type="submit" className="chat-button">
           Trimite
         </button>
       </form>

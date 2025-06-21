@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { getPrescriptionsByPatientId, fetchPatients } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { getCurrentUserId } from '../services/api';
+import { getCurrentUserId, getCurrentPatientId } from '../services/api';
 
 import PrescriptionForm from '../components/Prescriptions/PrescriptionForm';
 import PrescriptionList from '../components/Prescriptions/PrescriptionList';
-import { getCurrentPatientId } from '../services/api';
+import './PrescriptionsPage.css'; 
 
 function PrescriptionsPage() {
   const { role } = useAuth();
@@ -36,13 +36,14 @@ function PrescriptionsPage() {
   };
 
   return (
-    <div>
-      <h2>Rețete</h2>
+    <div className="prescriptions-container">
+      <h2 className="prescriptions-title">Rețete</h2>
 
       {Number(role) === 1 && (
-        <div>
-          <label>Selectează pacient:</label>
+        <div className="patient-select">
+          <label htmlFor="select-pacient">Selectează pacient:</label>
           <select
+            id="select-pacient"
             value={selectedPatientId}
             onChange={(e) => setSelectedPatientId(e.target.value)}
           >

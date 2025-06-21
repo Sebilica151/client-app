@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createPrescription, updatePrescription } from '../../services/api';
 import { getCurrentDoctorId } from '../../services/api';
+import '../../pages/PrescriptionsPage.css'; // asigură-te că e calea corectă
 
 function PrescriptionForm({ patientId, onSaved, editData }) {
   const [form, setForm] = useState({ medication: '', dosage: '' });
@@ -38,7 +39,10 @@ function PrescriptionForm({ patientId, onSaved, editData }) {
 
     try {
       if (editData) {
-        await updatePrescription(editData.Id ?? editData.id, { ...payload, id: editData.Id ?? editData.id });
+        await updatePrescription(editData.Id ?? editData.id, {
+          ...payload,
+          id: editData.Id ?? editData.id,
+        });
       } else {
         await createPrescription(payload);
       }
@@ -52,7 +56,7 @@ function PrescriptionForm({ patientId, onSaved, editData }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="prescription-form" onSubmit={handleSubmit}>
       <h3>{editData ? 'Editează rețeta' : 'Adaugă rețetă'}</h3>
       <input
         name="medication"
@@ -68,7 +72,9 @@ function PrescriptionForm({ patientId, onSaved, editData }) {
         placeholder="Dozaj"
         required
       />
-      <button type="submit">{editData ? 'Salvează modificările' : 'Adaugă'}</button>
+      <button type="submit">
+        {editData ? 'Salvează modificările' : 'Adaugă'}
+      </button>
     </form>
   );
 }

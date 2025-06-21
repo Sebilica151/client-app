@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-function ProfileForm({ data, onSave, onCancel }) {
-  const [formData, setFormData] = useState(JSON.parse(JSON.stringify(data))); // deep copy
+const PatientForm = ({ onSave, patient }) => {
+  const [formData, setFormData] = useState({ name: '', age: '', gender: '', phoneNumber: '' });
+
+  useEffect(() => {
+    if (patient) {
+      setFormData(patient);
+    } else {
+      setFormData({ name: '', age: '', gender: '', phoneNumber: '' });
+    }
+  }, [patient]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const path = name.split('.');
-    const updated = { ...formData };
-
-    let target = updated;
-    for (let i = 0; i < path.length - 1; i++) {
-      target = target[path[i]];
-    }
-    target[path[path.length - 1]] = value;
-
-    setFormData(updated);
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
@@ -24,27 +23,13 @@ function ProfileForm({ data, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      {data.role === "1" && data.doctor && (
-        <>
-          <input name="doctor.name" value={formData.doctor.name} onChange={handleChange} placeholder="Nume" />
-          <input name="doctor.age" value={formData.doctor.age} onChange={handleChange} placeholder="Vârstă" />
-          <input name="doctor.gender" value={formData.doctor.gender} onChange={handleChange} placeholder="Gen" />
-          <input name="doctor.specialization" value={formData.doctor.specialization} onChange={handleChange} placeholder="Specializare" />
-          <input name="doctor.seal" value={formData.doctor.seal} onChange={handleChange} placeholder="Parafă" />
-          <input name="doctor.contactNumber" value={formData.doctor.contactNumber} onChange={handleChange} placeholder="Telefon" />
-        </>
-      )}
-      {data.role === "2" && data.patient && (
-        <>
-          <input name="patient.name" value={formData.patient.name} onChange={handleChange} placeholder="Nume" />
-          <input name="patient.age" value={formData.patient.age} onChange={handleChange} placeholder="Vârstă" />
-          <input name="patient.gender" value={formData.patient.gender} onChange={handleChange} placeholder="Gen" />
-        </>
-      )}
-      <button type="submit">Salvează</button>
-      <button type="button" onClick={onCancel}>Anulează</button>
+      <input name="name" placeholder="Nume" value={formData.name} onChange={handleChange} />
+      <input name="age" placeholder="Varsta" value={formData.age} onChange={handleChange} />
+      <input name="gender" placeholder="Gen" value={formData.gender} onChange={handleChange} />
+      <input name="phoneNumber" placeholder="Telefon" value={formData.phoneNumber} onChange={handleChange} />
+      <button type="submit">Salveaza</button>
     </form>
   );
-}
+};
 
-export default ProfileForm;
+export default PatientForm;
