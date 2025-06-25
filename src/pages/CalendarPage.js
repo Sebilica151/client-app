@@ -12,6 +12,7 @@ import {
 import AppointmentForm from '../components/Calendar/AppointmentForm';
 import AppointmentList from '../components/Calendar/AppointmentList';
 import { useAuth } from '../context/AuthContext';
+import './CalendarPage.css';
 
 function CalendarPage() {
   const { role } = useAuth();
@@ -70,13 +71,14 @@ function CalendarPage() {
   };
 
   return (
-    <div>
+    <div className="calendar-container">
       <h2>Calendar programări</h2>
 
       {Number(role) === 2 && (
-        <>
+        <div className="form-group">
           <label>Doctor:</label>
           <select
+            className="dropdown"
             value={selectedDoctorId}
             onChange={(e) => {
               setSelectedDoctorId(e.target.value);
@@ -89,18 +91,19 @@ function CalendarPage() {
               <option key={d.Id} value={d.Id}>{d.Name}</option>
             ))}
           </select>
-        </>
+        </div>
       )}
 
       {selectedDoctorId && (
-        <>
-          <label style={{ display: 'block', marginTop: 10 }}>Ziua:</label>
+        <div className="form-group">
+          <label>Ziua:</label>
           <input
             type="date"
+            className="input-date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
           />
-        </>
+        </div>
       )}
 
       {selectedDoctorId && selectedDate && (

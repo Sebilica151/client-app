@@ -28,6 +28,8 @@ const PatientsPage = () => {
 
   const handleAssign = async () => {
     if (!selectedPatientId || !doctorUserId) return;
+    console.log("Pacient:", selectedPatientId);
+    console.log("Doctor:", doctorUserId);
     try {
       await assignPatientToDoctor(selectedPatientId, doctorUserId);
       setUsers(prev =>
@@ -55,7 +57,7 @@ const PatientsPage = () => {
   };
 
   const unassignedPatients = users.filter(u => u.Role === "2" && u.DoctorId === null);
-  const myPatients = users.filter(u => u.DoctorId === doctorUserId);
+  const myPatients = users.filter(u => u.DoctorId === doctorUserId); // 19
 
   return (
     <div className="patients-container">

@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:7219/api';
+export const API_BASE = 'http://localhost:7219/api';
 
 export const fetchPatients = async () => {
   const res = await fetch(`${API_BASE}/Patients`);
@@ -61,7 +61,7 @@ export const updatePatient = async (id, patient) => {
       throw new Error(`Eroare actualizare fișă medicală: ${res.status} - ${message}`);
     }
   
-    return; // nu parsăm res.json() deoarece e 204 No Content
+    return;
   };
   
   export const deleteMedicalRecord = async (id) => {
@@ -183,13 +183,19 @@ function getAuthHeaders() {
   };
 }
 
-export const fetchGlobalMessages = async () => {
-  const res = await fetch(`${API_BASE}/Messages/global`);
-  if (!res.ok) throw new Error('Eroare la încărcarea mesajelor');
+export const getGlobalMessages = async () => {
+  const res = await fetch(`${API_BASE}/messages/global`);
+  if (!res.ok) throw new Error("Eroare la încărcarea mesajelor globale");
   return res.json();
 };
 
-export const sendGlobalMessage = async (message) => {
+export const getPrivateMessages = async (user1Id, user2Id) => {
+  const res = await fetch(`${API_BASE}/messages/private/${user1Id}/${user2Id}`);
+  if (!res.ok) throw new Error("Eroare la încărcarea mesajelor private");
+  return res.json();
+};
+
+export const sendMessage = async (message) => {
   const res = await fetch(`${API_BASE}/Messages`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -198,6 +204,7 @@ export const sendGlobalMessage = async (message) => {
   if (!res.ok) throw new Error('Eroare la trimiterea mesajului');
   return res.json();
 };
+
 
 export const getPrescriptionsByPatientId = async (patientId) => {
   const res = await fetch(`${API_BASE}/Prescriptions/patient/${patientId}`);
@@ -313,6 +320,8 @@ export async function assignPatientToDoctor(patientId, doctorId) {
     body: JSON.stringify({ doctorId })
   });
 
+  console.log(response)
+
   if (!response.ok) {
     const message = await response.text();
     throw new Error(`Eroare la asignare: ${message}`);
@@ -334,5 +343,18 @@ export async function unassignPatientFromDoctor(patientId) {
 export const fetchUsers = async () => {
   const res = await fetch(`${API_BASE}/users`);
   if (!res.ok) throw new Error('Eroare la preluarea utilizatorilor');
+  return res.json();
+};
+
+export const archiveMedicalRecord = async (id) => {
+  const res = await fetch(`${API_BASE}/MedicalRecords/${id}/archive`, {
+    method: 'PUT',
+  });
+  if (!res.ok) throw new Error("Eroare la arhivare fișă medicală");
+};
+
+export const getArchivedMedicalRecordsByPatientId = async (patientId) => {
+  const res = await fetch(`${API_BASE}/MedicalRecords/patient/${patientId}/archived`);
+  if (!res.ok) throw new Error('Eroare la încărcarea fișelor arhivate');
   return res.json();
 };

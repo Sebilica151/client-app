@@ -1,0 +1,158 @@
+/* === CalendarPage.css === */
+
+.calendar-container {
+  padding: 1.5rem;
+  max-width: 800px;
+  margin: auto;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+label {
+  font-weight: 600;
+  margin-top: 1rem;
+  display: block;
+  color: #374151;
+}
+
+select,
+input[type="date"] {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
+
+/* AppointmentList */
+.appointments-section {
+  margin-top: 2rem;
+}
+
+.section-title {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.appointments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.appointment-item {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.appointment-detail {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-top: 0.25rem;
+}
+
+.appointment-actions button {
+  margin-left: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.edit-button {
+  background-color: #10b981;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #059669;
+}
+
+.delete-button {
+  background-color: #ef4444;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #dc2626;
+}
+
+.empty-message {
+  margin-top: 1rem;
+  color: #6b7280;
+}
+
+.slot-picker {
+  margin-top: 1rem;
+}
+
+.slot-label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.slot-button {
+  padding: 0.5rem;
+  background-color: #e0e7ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+.slot-button:hover:not(:disabled) {
+  background-color: #a5b4fc;
+}
+
+.slot-button:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.slot-button.selected {
+  background-color: #6366f1;
+  color: white;
+  font-weight: bold;
+}

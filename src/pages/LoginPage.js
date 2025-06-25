@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login as loginApi } from '../services/auth';
 import { useAuth } from '../context/AuthContext';
+import './LoginPage.css';
 
 function LoginPage() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -9,47 +10,46 @@ function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = await loginApi(formData.username, formData.password);
-      login(token);             // salvează în context + localStorage
-      console.log("Token salvat:", localStorage.getItem("token"));
-      navigate('/dashboard');    // imediat după login, fără reload
+      login(token);
+      navigate('/dashboard');
     } catch (err) {
       setError('Login eșuat. Verifică datele!');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Autentificare</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <input
-        type="text"
-        name="username"
-        placeholder="Email"
-        value={formData.username}
-        onChange={e => setFormData({ ...formData, username: e.target.value })}
-        required
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Parolă"
-        value={formData.password}
-        onChange={e => setFormData({ ...formData, password: e.target.value })}
-        required
-      />
-      <button type="submit">Login</button>
-      <button 
-        type="button"
-        onClick={() => navigate('/register')}
-        style={{ marginLeft: '10px' }}
-      >
-       Creeaza cont
-      </button>
-    </form>
+    <div className="login-wrapper">
+      <form onSubmit={handleSubmit} className="login-box">
+        <h2>Autentificare</h2>
+        {error && <div className="login-error">{error}</div>}
+        <input
+          type="text"
+          name="username"
+          placeholder="Email"
+          value={formData.username}
+          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Parolă"
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          required
+        />
+        <div className="login-actions">
+          <button type="submit">Login</button>
+          <button type="button" className="secondary" onClick={() => navigate('/register')}>
+            Creează cont
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 

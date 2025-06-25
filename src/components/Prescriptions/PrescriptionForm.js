@@ -4,13 +4,15 @@ import { getCurrentDoctorId } from '../../services/api';
 import '../../pages/PrescriptionsPage.css'; // asigură-te că e calea corectă
 
 function PrescriptionForm({ patientId, onSaved, editData }) {
-  const [form, setForm] = useState({ medication: '', dosage: '' });
+  const [form, setForm] = useState({ medication: '', dosage: '' , diagnosis: '', issuedAt: new Date().toISOString().split('T')[0]});
 
   useEffect(() => {
     if (editData) {
       setForm({
         medication: editData.medication,
         dosage: editData.dosage,
+        diagnosis: editData.diagnosis?? '',
+        issuedAt: editData.issuedAt?.split('T')[0] ?? new Date().toISOString().split('T')[0],
       });
     } else {
       setForm({ medication: '', dosage: '' });
@@ -35,6 +37,8 @@ function PrescriptionForm({ patientId, onSaved, editData }) {
       patientId,
       medication: form.medication,
       dosage: form.dosage,
+      diagnosis: form.diagnosis,
+      issuedAt: form.issuedAt,
     };
 
     try {
@@ -70,6 +74,21 @@ function PrescriptionForm({ patientId, onSaved, editData }) {
         value={form.dosage}
         onChange={handleChange}
         placeholder="Dozaj"
+        required
+      />
+      <input
+        name="diagnosis"
+        value={form.diagnosis}
+        onChange={handleChange}
+        placeholder="Diagnostic"
+        required
+      />
+
+      <input
+        type="date"
+        name="issuedAt"
+        value={form.issuedAt}
+        onChange={handleChange}
         required
       />
       <button type="submit">

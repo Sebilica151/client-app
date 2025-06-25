@@ -20,10 +20,12 @@ function PrescriptionList({ prescriptions, onEdit, onDeleted }) {
     doc.text("Lista rețetelor", 14, 16);
 
     autoTable(doc, {
-      head: [['Medicament', 'Dozaj']],
+      head: [['Medicament', 'Dozaj', 'Diagnostic', 'Data']],
       body: prescriptions.map(p => [
         p.Medication ?? p.medication ?? '—',
-        p.Dosage ?? p.dosage ?? '—'
+        p.Dosage ?? p.dosage ?? '—',
+        p.Diagnosis ?? '—',
+        p.IssuedAt ? new Date(p.IssuedAt).toLocaleDateString() : '—'
       ]),
       startY: 22
     });
@@ -45,8 +47,10 @@ function PrescriptionList({ prescriptions, onEdit, onDeleted }) {
       {prescriptions.map((p) => (
         <div key={p.Id ?? p.id} className="prescription-card">
           <div className="prescription-details">
-            <p><strong>{p.Medication}</strong></p>
-            <p>{p.Dosage}</p>
+            <p><em>Medicament:</em>{p.Medication}</p>
+            <p><em>Dozaj:</em>{p.Dosage}</p>
+            <p><em>Diagnostic:</em> {p.Diagnosis}</p>
+            <p><em>Data:</em> {new Date(p.IssuedAt).toLocaleDateString()}</p>
           </div>
 
           {Number(role) === 1 && (

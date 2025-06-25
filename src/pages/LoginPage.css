@@ -1,0 +1,78 @@
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e9f1f7, #fefefe);
+  padding: 2rem;
+}
+
+.login-box {
+  background: #ffffff;
+  padding: 2.5rem 3rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-box h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #f9f9f9;
+  transition: border 0.3s ease;
+}
+
+.login-box input:focus {
+  border-color: #3498db;
+  outline: none;
+  background: #fff;
+}
+
+.login-error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.login-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.login-actions button {
+  flex: 1;
+  padding: 0.9rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-actions button[type="submit"] {
+  background-color: #3498db;
+  color: white;
+}
+
+.login-actions .secondary {
+  background-color: #ecf0f1;
+  color: #2c3e50;
+}
+
+.login-actions button:hover {
+  opacity: 0.9;
+}

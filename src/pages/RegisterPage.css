@@ -1,0 +1,82 @@
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f0f4f8, #ffffff);
+}
+
+.register-box {
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 500px;
+}
+
+.register-box h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.register-box input,
+.register-box select {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  transition: border 0.3s ease;
+}
+
+.register-box input:focus,
+.register-box select:focus {
+  border-color: #3498db;
+  outline: none;
+  background: #fff;
+}
+
+.register-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.register-actions button {
+  flex: 1;
+  padding: 0.9rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.register-actions button:first-child {
+  background-color: #3498db;
+  color: white;
+}
+
+.register-actions .secondary {
+  background-color: #ecf0f1;
+  color: #2c3e50;
+}
+
+.register-actions button:hover {
+  opacity: 0.9;
+}
+
+.error-message {
+  background: #ffe6e6;
+  color: #e74c3c;
+  padding: 0.75rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  text-align: center;
+}

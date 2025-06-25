@@ -1,28 +1,37 @@
 import React from 'react';
-
-const HOURS = Array.from({ length: 9 }, (_, i) => 8 + i); // 8-16
+import '../../pages/CalendarPage.css';
 
 function TimeSlotPicker({ availableSlots, selectedSlot, onSelect }) {
+  const generateSlots = () => {
+    const slots = [];
+    const start = 8 * 60; 
+    const end = 16 * 60 + 30; 
+
+    for (let min = start; min <= end; min += 30) {
+      const h = Math.floor(min / 60).toString().padStart(2, '0');
+      const m = (min % 60).toString().padStart(2, '0');
+      slots.push(`${h}:${m}`);
+    }
+    return slots;
+  };
+
+  const allSlots = generateSlots();
+
   return (
-    <div>
-      <label>Selectează un interval orar:</label>
-      <ul>
-        {HOURS.map(hour => {
-          const slot = `${hour.toString().padStart(2, '0')}:00`;
-          const disabled = !availableSlots.includes(slot);
-          return (
-            <li key={slot}>
-              <button
-                disabled={disabled}
-                onClick={() => onSelect(slot)}
-                style={{ backgroundColor: selectedSlot === slot ? '#ccc' : '' }}
-              >
-                {slot}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+    <div className="slot-picker">
+      <label className="slot-label">Selectează un interval orar:</label>
+      <div className="slot-grid">
+        {allSlots.map(slot => (
+          <button
+            key={slot}
+            className={`slot-button ${selectedSlot === slot ? 'selected' : ''}`}
+            disabled={!availableSlots.includes(slot)}
+            onClick={() => onSelect(slot)}
+          >
+            {slot}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

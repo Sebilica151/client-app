@@ -1,7 +1,8 @@
-// pages/ProfilePage.js
+// src/pages/ProfilePage.js
 import React, { useEffect, useState } from "react";
 import { fetchProfile, updateProfile } from "../services/api";
 import ProfileForm from "../components/Profile/ProfileForm";
+import "../pages/ProfilePage.css";
 
 const ProfilePage = () => {
   const [userData, setUserData] = useState(null);
@@ -12,10 +13,10 @@ const ProfilePage = () => {
       try {
         const response = await fetchProfile();
         console.log("Date profil:", response);
-          setUserData({
-             ...response,
-             role: response.Role ?? response.role // normalizează capitalizarea
-          });
+        setUserData({
+          ...response,
+          role: response.Role ?? response.role // normalizează capitalizarea
+        });
       } catch (error) {
         console.error("Eroare la încărcarea profilului:", error);
       }
@@ -41,7 +42,6 @@ const ProfilePage = () => {
       }));
     }
   };
-  
 
   const handleSave = async () => {
     try {
@@ -54,16 +54,18 @@ const ProfilePage = () => {
   };
 
   return (
-    <div>
-      <h2>Profilul meu</h2>
-      <ProfileForm
-        formData={userData}
-        onChange={handleChange}
-        onSave={handleSave}
-        editing={editing}
-        setEditing={setEditing}
-      />
-    </div>
+ <div className="profile-page">
+  <div className="profile-container">
+    <h2>Profilul meu</h2>
+    <ProfileForm
+      formData={userData}
+      onChange={handleChange}
+      onSave={handleSave}
+      editing={editing}
+      setEditing={setEditing}
+    />
+  </div>
+</div>
   );
 };
 

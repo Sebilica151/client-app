@@ -9,21 +9,39 @@ function MedicalRecordForm({ patientId, onRecordSaved, recordToEdit }) {
   const [formData, setFormData] = useState({
     diagnosis: '',
     treatment: '',
-    notes: ''
+    gender: '',
+    personalNumber: '',
+    birthday: '',
+    birthPlace: '',
+    pastMedicalCondition: '',
+    currentMedicalCondition: ''
   });
 
   const { role } = useAuth();
-
 
   useEffect(() => {
     if (recordToEdit) {
       setFormData({
         diagnosis: recordToEdit.Diagnosis || '',
         treatment: recordToEdit.Treatment || '',
-        notes: recordToEdit.Notes || ''
+        gender: recordToEdit.Gender || '',
+        personalNumber: recordToEdit.PersonalNumber || '',
+        birthday: recordToEdit.Birthday ? recordToEdit.Birthday.slice(0, 10) : '',
+        birthPlace: recordToEdit.BirthPlace || '',
+        pastMedicalCondition: recordToEdit.PastMedicalCondition || '',
+        currentMedicalCondition: recordToEdit.CurrentMedicalCondition || ''
       });
     } else {
-      setFormData({ diagnosis: '', treatment: '', notes: '' });
+      setFormData({
+        diagnosis: '',
+        treatment: '',
+        gender: '',
+        personalNumber: '',
+        birthday: '',
+        birthPlace: '',
+        pastMedicalCondition: '',
+        currentMedicalCondition: ''
+      });
     }
   }, [recordToEdit]);
 
@@ -38,7 +56,7 @@ function MedicalRecordForm({ patientId, onRecordSaved, recordToEdit }) {
       if (recordToEdit) {
         const recordId = recordToEdit.Id ?? recordToEdit.id;
         const patientId = recordToEdit.PatientId ?? recordToEdit.patientId;
-      
+
         const payload = {
           id: recordId,
           patientId: patientId,
@@ -54,8 +72,18 @@ function MedicalRecordForm({ patientId, onRecordSaved, recordToEdit }) {
         await createMedicalRecord(payload);
       }
 
-      setFormData({ diagnosis: '', treatment: '', notes: '' });
-      onRecordSaved(); // ✅ Trigger refresh
+      setFormData({
+        diagnosis: '',
+        treatment: '',
+        gender: '',
+        personalNumber: '',
+        birthday: '',
+        birthPlace: '',
+        pastMedicalCondition: '',
+        currentMedicalCondition: ''
+      });
+
+      onRecordSaved();
     } catch (err) {
       console.error('Eroare la salvare fișă medicală:', err);
     }
@@ -63,35 +91,19 @@ function MedicalRecordForm({ patientId, onRecordSaved, recordToEdit }) {
 
   return (
     role === 1 && (
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="record-form">
         <h3>{recordToEdit ? 'Editează fișa medicală' : 'Adaugă fișă medicală'}</h3>
-  
-        <input
-          type="text"
-          name="diagnosis"
-          placeholder="Diagnostic"
-          value={formData.diagnosis}
-          onChange={handleChange}
-          required
-        />
-  
-        <input
-          type="text"
-          name="treatment"
-          placeholder="Tratament"
-          value={formData.treatment}
-          onChange={handleChange}
-          required
-        />
-  
-        <textarea
-          name="notes"
-          placeholder="Observații"
-          value={formData.notes}
-          onChange={handleChange}
-        />
-  
-        <button type="submit">
+
+        <input type="text" name="diagnosis" placeholder="Diagnostic" value={formData.diagnosis} onChange={handleChange} required />
+        <input type="text" name="treatment" placeholder="Tratament" value={formData.treatment} onChange={handleChange} required />
+        <input type="text" name="gender" placeholder="Gen" value={formData.gender} onChange={handleChange} />
+        <input type="text" name="personalNumber" placeholder="CNP" value={formData.personalNumber} onChange={handleChange} />
+        <input type="date" name="birthday" placeholder="Data nașterii" value={formData.birthday} onChange={handleChange} />
+        <input type="text" name="birthPlace" placeholder="Locul nașterii" value={formData.birthPlace} onChange={handleChange} />
+        <textarea name="pastMedicalCondition" placeholder="Afecțiuni anterioare" value={formData.pastMedicalCondition} onChange={handleChange} />
+        <textarea name="currentMedicalCondition" placeholder="Afecțiuni actuale" value={formData.currentMedicalCondition} onChange={handleChange} />
+
+        <button type="submit" className="submit-button">
           {recordToEdit ? 'Salvează modificările' : 'Adaugă fișa'}
         </button>
       </form>
