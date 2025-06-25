@@ -46,6 +46,7 @@ const ProfileForm = ({ formData, onChange, onSave, editing, setEditing }) => {
           onChange={(e) => onChange("PasswordHash", e.target.value)}
         />
       </div>
+
       {isDoctor && (
         <>
           <div>
@@ -75,12 +76,29 @@ const ProfileForm = ({ formData, onChange, onSave, editing, setEditing }) => {
               onChange={(e) => onChange("ContactNumber", e.target.value)}
             />
           </div>
+          <div>
+            <label>Ora de început a programului</label>
+            <input
+              type="time"
+              value={roleData.WorkStart || "08:00"}
+              disabled={!editing}
+              onChange={(e) => onChange("WorkStart", e.target.value)}
+              min="05:00"
+              max="15:00"
+              step="1800"
+            />
+          </div>
         </>
       )}
+
       {!editing ? (
-        <button type="button" onClick={() => setEditing(true)}>Editează</button>
+        <button type="button" onClick={() => setEditing(true)}>
+          Editează
+        </button>
       ) : (
-        <button type="button" onClick={onSave}>Salvează</button>
+        <button type="button" onClick={onSave}>
+          Salvează
+        </button>
       )}
     </form>
   );

@@ -2,9 +2,14 @@ import React, { useState, useEffect } from 'react';
 import TimeSlotPicker from './TimeSlotPicker';
 import '../../pages/CalendarPage.css';
 
-const generateHalfHourSlots = () => {
+const generateHalfHourSlots = (start = '08:00', end = '16:30') => {
+  const [startHour, startMin] = start.split(':').map(Number);
+  const [endHour, endMin] = end.split(':').map(Number);
+  const startTotal = startHour * 60 + startMin;
+  const endTotal = endHour * 60 + endMin;
+
   const slots = [];
-  for (let min = 8 * 60; min <= 16 * 60 + 30; min += 30) {
+  for (let min = startTotal; min + 30 <= endTotal; min += 30) {
     const h = String(Math.floor(min / 60)).padStart(2, '0');
     const m = String(min % 60).padStart(2, '0');
     slots.push(`${h}:${m}`);
@@ -12,91 +17,71 @@ const generateHalfHourSlots = () => {
   return slots;
 };
 
-
 function AppointmentForm({
+  doctor,
   onSave,
   onUpdate,
   doctorId,
   patientId,
   selectedDate,
-  existingAppointments = [],
-  editData = null
+  appointments = [],
+  editData = null,
+  doctorWorkStart = "08:00",
+  doctorWorkEnd = "16:30"
 }) {
   const [selectedTime, setSelectedTime] = useState('');
 
   useEffect(() => {
-    if (editData?.TimeSlot) {
-      setSelectedTime(editData.TimeSlot.split(':').slice(0, 2).join(':'));
-    } else {
+    if (!editData && selectedTime && selectedDate && doctorId && patientId) {
+      // Verificare dacă slotul este deja ocupat
+      const alreadyTaken = appointments.some(
+        app =>
+          app.Date === selectedDate &&
+          app.TimeSlot.substring(0, 5) === selectedTime
+      );
+      if (alreadyTaken) {
+        alert('Acest interval este deja ocupat.');
+        return;
+      }
+
+      const payload = {
+        doctorId,
+        patientId,
+        date: selectedDate,
+        timeSlot: selectedTime + ':00',
+      };
+      onSave(payload);
       setSelectedTime('');
     }
-  }, [editData]);
+  }, [selectedTime]);
 
-  const takenSlots = existingAppointments
-    .map(app => app.TimeSlot)
-    .filter(Boolean)
-    .map(slot => slot.substring(0, 5));
+  const workStart = doctor?.WorkStart || doctorWorkStart;
+  const workEnd = doctor?.WorkEnd || doctorWorkEnd;
+  const allSlots = generateHalfHourSlots(workStart, workEnd);
 
-const allSlots = generateHalfHourSlots();
+  const takenSlots = appointments
+    .filter(app => app.Date === selectedDate && (!editData || app.Id !== editData?.Id))
+    .map(app => app.TimeSlot.substring(0, 5));
 
-const availableSlots = allSlots.filter(slot =>
-  editData ? true : !takenSlots.includes(slot)
-);
-
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!selectedTime || !selectedDate || !doctorId || !patientId) return;
-
-    const payload = {
-      doctorId,
-      patientId,
-      date: selectedDate,
-      timeSlot: selectedTime + ':00'
-    };
-
-    if (editData?.Id) {
-      onUpdate({ Id: editData.Id, ...payload });
-    } else {
-      onSave(payload);
-    }
-
-    setSelectedTime('');
-  };
+  const availableSlots = allSlots.filter(slot =>
+    !takenSlots.includes(slot) || slot === selectedTime
+  );
 
   return (
-  <form className="appointment-form" onSubmit={(e) => e.preventDefault()}>
-    <h3 className="appointment-title">
-      {editData ? 'Editează programarea' : 'Programează-te'}
-    </h3>
+    <form className="appointment-form" onSubmit={(e) => e.preventDefault()}>
+      <h3 className="appointment-title">
+        {editData ? 'Editează programarea' : 'Programează-te'}
+      </h3>
 
-    <TimeSlotPicker
-      availableSlots={availableSlots}
-      selectedSlot={selectedTime}
-      onSelect={(slot) => {
-        setSelectedTime(slot);
-
-        if (!editData && slot && selectedDate && doctorId && patientId) {
-          const payload = {
-            doctorId,
-            patientId,
-            date: selectedDate,
-            timeSlot: slot + ':00'
-          };
-          onSave(payload);
-          setSelectedTime('');
-        }
-      }}
-    />
-
-    {editData && (
-      <button type="submit" className="submit-btn">
-        Salvează modificările
-      </button>
-    )}
-  </form>
-);
-
+      <TimeSlotPicker
+        availableSlots={availableSlots}
+        selectedSlot={selectedTime}
+        onSelect={setSelectedTime}
+        workStart={workStart}
+        workEnd={workEnd}
+      />
+    </form>
+  );
 }
 
 export default AppointmentForm;

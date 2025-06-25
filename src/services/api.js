@@ -146,35 +146,6 @@ export const fetchAppointmentsByDoctorAndDate = async (doctorId, date) => {
   return res.json();
 };
 
-// export const fetchProfile = async () => {
-//   const headers = getAuthHeaders();
-//   console.log(" Headers trimiși:", headers); // 
-
-//   const res = await fetch(`${API_BASE}/Profile`, {
-//     method: 'GET',
-//     headers,
-//   });
-
-//   if (!res.ok) {
-//     console.error("Răspuns:", res.status); // 
-//     throw new Error("Eroare la preluarea profilului");
-//   }
-
-//   return res.json();
-// };
-
-// export const updateProfile = async (updatedData) => {
-//   const res = await fetch(`${API_BASE}/Profile`, {
-//     method: 'PUT',
-//     headers: getAuthHeaders(),
-//     body: JSON.stringify(updatedData),
-//   });
-
-//   if (!res.ok) throw new Error("Eroare la actualizarea profilului");
-
-//   return true;
-// };
-
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
   return {
@@ -302,7 +273,7 @@ export const updateProfile = async (data) => {
     headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
-
+  console.log(data)
   if (!res.ok) {
     throw new Error("Eroare la actualizarea profilului");
   }

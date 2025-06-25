@@ -23,6 +23,19 @@ function CalendarPage() {
   const [editData, setEditData] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [patientId, setPatientId] = useState(null);
+  const [doctorWorkStart, setDoctorWorkStart] = useState("08:00");
+  const [doctorWorkEnd, setDoctorWorkEnd] = useState("16:30");
+
+  useEffect(() => {
+  if (selectedDoctorId) {
+    const doctor = doctors.find(d => d.Id == selectedDoctorId);
+    if (doctor) {
+      setDoctorWorkStart(doctor.WorkStart || "08:00");
+      setDoctorWorkEnd(doctor.WorkEnd || "16:30");
+    }
+  }
+}, [selectedDoctorId, doctors]);
+
 
   useEffect(() => {
     if (Number(role) === 2) {
@@ -70,6 +83,8 @@ function CalendarPage() {
     }
   };
 
+  const selectedDoctor = doctors.find((d) => d.Id === Number(selectedDoctorId));
+
   return (
     <div className="calendar-container">
       <h2>Calendar programări</h2>
@@ -110,10 +125,14 @@ function CalendarPage() {
         <>
           {Number(role) === 2 && (
             <AppointmentForm
+              doctor={selectedDoctor}
               doctorId={selectedDoctorId}
               patientId={patientId}
               selectedDate={selectedDate}
               existingAppointments={appointments}
+              doctorWorkStart={doctorWorkStart}
+              doctorWorkEnd={doctorWorkEnd}
+              appointments={appointments}
               editData={editData}
               onSave={handleAdd}
               onUpdate={handleUpdate}

@@ -44,14 +44,36 @@ const ProfilePage = () => {
   };
 
   const handleSave = async () => {
-    try {
-      await updateProfile(userData);
-      setEditing(false);
-      alert("Profil actualizat cu succes!");
-    } catch (error) {
-      console.error("Eroare la actualizare:", error);
+  try {
+    const updated = { ...userData };
+
+    if (updated.Doctor?.WorkStart) {
+      let start = updated.Doctor.WorkStart;
+      if (start.length === 5) start += ":00"; 
+
+      updated.Doctor.WorkStart = start;
+
+      const [hours, minutes] = start.split(":").map(Number);
+      const end = new Date(0, 0, 0, hours, minutes + 510); 
+
+      const formattedEnd = `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}:00`;
+
+      updated.Doctor.WorkEnd = formattedEnd;
     }
-  };
+
+    console.log("Trimitem profilul:", updated);
+    console.log("Trimitem profilul:", updated.Doctor.WorkStart);
+
+    await updateProfile(updated);
+    setEditing(false);
+    alert('Profil salvat cu succes');
+  } catch (err) {
+    console.error('Eroare la salvarea profilului:', err);
+    alert('A apărut o eroare');
+  }
+};
+
+
 
   return (
  <div className="profile-page">
