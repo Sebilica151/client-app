@@ -66,6 +66,15 @@ function CalendarPage() {
     }
   };
 
+  const handleConfirm = async (id) => {
+  try {
+    await fetch(`/api/appointments/confirm/${id}`, { method: 'PATCH' });
+    setRefreshKey(k => k + 1);
+  } catch {
+    alert('Eroare la confirmare.');
+  }
+};
+
   const handleUpdate = async (updatedData) => {
     try {
       await updateAppointment(updatedData.Id, updatedData);
@@ -134,6 +143,7 @@ function CalendarPage() {
               doctorWorkEnd={doctorWorkEnd}
               appointments={appointments}
               editData={editData}
+              refreshAppointments={() => setRefreshKey(k => k + 1)}
               onSave={handleAdd}
               onUpdate={handleUpdate}
             />
@@ -144,6 +154,7 @@ function CalendarPage() {
             role={role}
             onEdit={setEditData}
             onDelete={handleDelete}
+            onConfirm={handleConfirm}
           />
         </>
       )}

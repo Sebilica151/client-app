@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import TimeSlotPicker from './TimeSlotPicker';
+import AppointmentRequestModal from './AppointmentRequestModal';
 import '../../pages/CalendarPage.css';
+import { API_BASE } from '../../services/api';
 
 const generateHalfHourSlots = (start = '08:00', end = '16:30') => {
   const [startHour, startMin] = start.split(':').map(Number);
@@ -27,45 +29,76 @@ function AppointmentForm({
   appointments = [],
   editData = null,
   doctorWorkStart = "08:00",
-  doctorWorkEnd = "16:30"
+  doctorWorkEnd = "16:30",
+  refreshAppointments // pentru actualizarea listei după upload
 }) {
   const [selectedTime, setSelectedTime] = useState('');
-
-  useEffect(() => {
-    if (!editData && selectedTime && selectedDate && doctorId && patientId) {
-      // Verificare dacă slotul este deja ocupat
-      const alreadyTaken = appointments.some(
-        app =>
-          app.Date === selectedDate &&
-          app.TimeSlot.substring(0, 5) === selectedTime
-      );
-      if (alreadyTaken) {
-        alert('Acest interval este deja ocupat.');
-        return;
-      }
-
-      const payload = {
-        doctorId,
-        patientId,
-        date: selectedDate,
-        timeSlot: selectedTime + ':00',
-      };
-      onSave(payload);
-      setSelectedTime('');
-    }
-  }, [selectedTime]);
+  const [showModal, setShowModal] = useState(false);
 
   const workStart = doctor?.WorkStart || doctorWorkStart;
   const workEnd = doctor?.WorkEnd || doctorWorkEnd;
   const allSlots = generateHalfHourSlots(workStart, workEnd);
 
-  const takenSlots = appointments
-    .filter(app => app.Date === selectedDate && (!editData || app.Id !== editData?.Id))
-    .map(app => app.TimeSlot.substring(0, 5));
+const takenSlots = appointments
+  .filter(app => app.Date === selectedDate && app.Status !== 'rejected' && (!editData || app.Id !== editData?.Id))
+  .map(app => app.TimeSlot.substring(0, 5));
 
   const availableSlots = allSlots.filter(slot =>
     !takenSlots.includes(slot) || slot === selectedTime
   );
+
+  useEffect(() => {
+  if (!editData && selectedTime && selectedDate && doctorId && patientId) {
+    const alreadyTaken = appointments.some(
+      app =>
+        app.Date === selectedDate &&
+        app.TimeSlot.substring(0, 5) === selectedTime
+    );
+    if (alreadyTaken) {
+      alert('Acest interval este deja ocupat.');
+      setSelectedTime('');
+      return;
+    }
+
+    setShowModal(true);
+  }
+}, [selectedTime]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedTime('');
+  };
+
+  const handleSubmitWithFile = async (file) => {
+  const formData = new FormData();
+  formData.append('DoctorId', doctorId);
+  formData.append('PatientId', patientId);
+  formData.append('Date', selectedDate);
+  formData.append('TimeSlot', selectedTime + ':00');
+  formData.append('File', file);
+
+  try {
+    const response = await fetch(`${API_BASE}/appointments/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message);
+    }
+
+    if (refreshAppointments) {
+      await refreshAppointments(); 
+    }
+
+    setSelectedTime('');   
+    setShowModal(false);  
+  } catch (err) {
+    alert('Eroare la trimiterea cererii: ' + err.message);
+  }
+};
+
 
   return (
     <form className="appointment-form" onSubmit={(e) => e.preventDefault()}>
@@ -80,6 +113,15 @@ function AppointmentForm({
         workStart={workStart}
         workEnd={workEnd}
       />
+
+      {!editData && (
+        <AppointmentRequestModal
+          isOpen={showModal}
+          onClose={handleCloseModal}
+          onSubmit={handleSubmitWithFile}
+          selectedTime={selectedTime}
+        />
+      )}
     </form>
   );
 }
